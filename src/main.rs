@@ -21,8 +21,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     if cli.stdin {
         let mut source = String::new();
         std::io::stdin().read_to_string(&mut source).expect("failed read source from stdin");
-        println!("{}", source);
-    } else {
+        println!("{}", format(source.as_str()).map_err(Box::new)?);
+    }
+    else {
         process_files(cli.file)?;
     }
 
@@ -47,11 +48,13 @@ fn process_files(paths: Vec<String>) -> Result<(), Box<dyn Error>> {
                         updated += 1
                     }
                 }
-            } else {
+            }
+            else {
                 let walker = build_walker(path);
                 updated += format_directory(walker)?;
             }
-        } else {
+        }
+        else {
             eprintln!("no such file or directory: {}", path.display());
         }
     }
